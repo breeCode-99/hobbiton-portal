@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hobbiton Investments — AI Damage Inspection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:       #FFFFFF;
+      --bg:          #F7F8FA;
+      --bg-card:     #FFFFFF;
+      --green:       #198A37;
+      --green-dark:  #126828;
+      --green-light: #E8F5EC;
+      --green-mid:   #C8E6C9; 
+      --red:         #D32F2F;
+      --red-dark:    #9B1C1C;
+      --red-light:   #FDECEA;
+      --red-mid:     #FFCDD2;
+      --border:      #E2E5EA;
+      --border-dark: #C8CDD6;
+      --text-1:      #111827;
+      --text-2:      #4B5563;
+      --text-3:      #9CA3AF;
+      --amber:       #D97706;
+      --amber-light: #FEF3C7;
+      --radius:      14px;
+      --shadow:      0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.05);
+      --shadow-lg:   0 4px 24px rgba(0,0,0,0.12);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text-1);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── NAV ──────────────────────────────────────────── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 64px;
+      background: var(--green);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(25,138,55,0.25);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-logo {
+      width: 38px;
+      height: 38px;
+      background: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--green);
+      letter-spacing: -1px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .nav-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-name span {
+      opacity: 0.75;
+      font-weight: 500;
+      font-size: 13px;
+      display: block;
+      margin-top: -2px;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 6px 16px;
+      border-radius: 30px;
+    }
+
+    .nav-center-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 14px;
+      border-radius: 30px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #86EFAC;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 6px #86EFAC;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .status-text {
+      font-size: 12px;
+      color: white;
+      font-weight: 500;
+    }
+
+    /* ── HERO STRIP ───────────────────────────────────── */
+    .hero-strip {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 60%, #22A349 100%);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hero-left h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-left p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      margin-top: 2px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 24px;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .hero-stat-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.65);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* ── MAIN LAYOUT ──────────────────────────────────── */
+    main {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 0;
+      height: calc(100vh - 64px - 80px);
+      overflow: hidden;
+    }
+
+    /* ── LEFT PANEL ───────────────────────────────────── */
+    .panel-left {
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .section-head-dot {
+      width: 4px;
+      height: 20px;
+      background: var(--green);
+      border-radius: 2px;
+    }
+
+    .section-head-dot.red {
+      background: var(--red);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    /* ── UPLOAD ZONE ──────────────────────────────────── */
+    .upload-zone {
+      border: 2px dashed var(--green-mid);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--green-light);
+      position: relative;
+    }
+
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--green);
+      background: #D4EDDA;
+    }
+
+    .upload-zone input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--green);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 12px;
+      box-shadow: 0 4px 12px rgba(25,138,55,0.3);
+    }
+
+    .upload-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 4px;
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    /* ── PREVIEW ──────────────────────────────────────── */
+    .preview-wrap {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 2px solid var(--green-mid);
+      background: #f0f0f0;
+    }
+
+    .preview-wrap img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .scanner-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      box-shadow: 0 0 16px var(--green), 0 0 4px white;
+      top: -3px;
+      opacity: 0;
+    }
+
+    .scanner-line.scanning {
+      animation: scan 1.8s ease-in-out infinite;
+      opacity: 1;
+    }
+
+    @keyframes scan { 0% { top: 0% } 100% { top: 100% } }
+
+    .scanner-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      background-image:
+        linear-gradient(rgba(25,138,55,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25,138,55,0.1) 1px, transparent 1px);
+      background-size: 28px 28px;
+      transition: opacity 0.3s;
+    }
+
+    .scanner-grid.visible { opacity: 1; }
+
+    .preview-corner {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      background: linear-gradient(180deg, rgba(25,138,55,0.7) 0%, transparent 100%);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .preview-corner-text {
+      font-size: 10px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .preview-status-badge {
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    /* ── CLAIM META ───────────────────────────────────── */
+    .claim-meta {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .meta-item label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .meta-item span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-1);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── INSPECT BTN ──────────────────────────────────── */
+    .inspect-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--green);
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(25,138,55,0.35);
+    }
+
+    .inspect-btn:hover:not(:disabled) {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(25,138,55,0.4);
+    }
+
+    .inspect-btn:disabled {
+      background: #A8D5B5;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .reset-link {
+      text-align: center;
+    }
+
+    .reset-link button {
+      background: none;
+      border: none;
+      color: var(--text-3);
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: underline;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .reset-link button:hover { color: var(--red); }
+
+    /* ── RIGHT PANEL ──────────────────────────────────── */
+    .panel-right {
+      background: var(--bg);
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── EMPTY STATE ──────────────────────────────────── */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .empty-circle {
+      width: 80px; height: 80px;
+      background: var(--green-light);
+      border: 2px solid var(--green-mid);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-2);
+    }
+
+    .empty-sub {
+      font-size: 13px;
+      color: var(--text-3);
+      max-width: 240px;
+    }
+
+    /* ── RESULT CARD ──────────────────────────────────── */
+    .result-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .result-card-header {
+      background: var(--green);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .result-card-header.red { background: var(--red); }
+
+    .result-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .result-card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .result-card-body { padding: 16px; }
+
+    /* ── CLAIM HEADER ROW ─────────────────────────────── */
+    .claim-id-row {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+    }
+
+    .claim-id-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .claim-id-time {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    /* ── ANNOTATED IMAGE ──────────────────────────────── */
+    .annotated-wrap {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .annotated-header {
+      background: var(--green);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .annotated-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .annotated-wrap img {
+      width: 100%;
+      display: block;
+      max-height: 260px;
+      object-fit: contain;
+      background: #f5f5f5;
+    }
+
+    /* ── SEVERITY ROW ─────────────────────────────────── */
+    .severity-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .sev-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .sev-card-top {
+      height: 4px;
+    }
+
+    .sev-card-top.green  { background: var(--green); }
+    .sev-card-top.red    { background: var(--red); }
+    .sev-card-top.amber  { background: var(--amber); }
+    .sev-card-top.grey   { background: var(--border-dark); }
+
+    .sev-card-body { padding: 14px 10px; }
+
+    .sev-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+
+    .sev-value {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .sev-value.severe   { color: var(--red); }
+    .sev-value.moderate { color: var(--amber); }
+    .sev-value.minor    { color: var(--green); }
+    .sev-value.none     { color: var(--text-3); }
+    .sev-value.count    { color: var(--green); }
+    .sev-value.speed    { color: var(--text-1); font-size: 16px; }
+
+    /* ── DETECTIONS ───────────────────────────────────── */
+    .detections-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .detections-header {
+      background: var(--green);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .detections-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .detections-count {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.25);
+      color: white;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detection-list { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+
+    .detection-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.15s;
+    }
+
+    .detection-item:hover { border-color: var(--green-mid); }
+
+    .det-left { display: flex; align-items: center; gap: 10px; }
+
+    .det-color-bar {
+      width: 4px;
+      height: 36px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .det-name { font-size: 13px; font-weight: 700; color: var(--text-1); }
+    .det-sev  { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+    .det-right { display: flex; align-items: center; gap: 10px; }
+
+    .conf-bar-wrap {
+      width: 64px; height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .conf-bar { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+
+    .conf-pct {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      color: var(--text-2);
+      width: 38px;
+      text-align: right;
+    }
+
+    /* ── FRAUD PANEL ──────────────────────────────────── */
+    .fraud-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .fraud-card-header {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .fraud-card-header.low    { background: var(--green); }
+    .fraud-card-header.medium { background: var(--amber); }
+    .fraud-card-header.high   { background: var(--red); }
+
+    .fraud-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .fraud-risk-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 12px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.25);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.35);
+      letter-spacing: 0.05em;
+    }
+
+    .fraud-body { padding: 12px 16px; }
+
+    .fraud-flag-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--red-light);
+      border: 1px solid var(--red-mid);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--red-dark);
+      font-weight: 500;
+    }
+
+    .fraud-clean-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--green-light);
+      border: 1px solid var(--green-mid);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--green-dark);
+      font-weight: 600;
+    }
+
+    /* ── RECOMMENDATION ───────────────────────────────── */
+    .rec-card {
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .rec-card.approve {
+      background: var(--green);
+    }
+
+    .rec-card.review {
+      background: var(--red);
+    }
+
+    .rec-icon-wrap {
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .rec-text strong {
+      font-size: 15px;
+      font-weight: 800;
+      color: white;
+      display: block;
+    }
+
+    .rec-text span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+    }
+
+    /* ── FOOTER BAR ───────────────────────────────────── */
+    .footer-bar {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-bar span { font-size: 11px; color: var(--text-3); }
+
+    .footer-bar strong {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* ── TOAST ────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: var(--red);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 4px 20px rgba(211,47,47,0.4);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 999;
+      max-width: 360px;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    .result-hidden { display: none !important; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">HI</div>
+    <div class="nav-name">
+      Hobbiton Investments
+      <span>Insurance Technology Platform</span>
+    </div>
+  </div>
+  <div class="nav-center">
+    <span style="font-size:16px;">🛡️</span>
+    <span class="nav-center-text">AI Damage Inspection</span>
+  </div>
+  <div class="nav-right">
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      <span class="status-text">Model Online · YOLOv8</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO STRIP -->
+<div class="hero-strip">
+  <div class="hero-left">
+    <h1>Vehicle Damage Assessment</h1>
+    <p>Submit photographic evidence — AI analyses damage in seconds</p>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-val">8</div>
+      <div class="hero-stat-label">Damage Classes</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">&lt;2s</div>
+      <div class="hero-stat-label">Avg. Inference</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">83%</div>
+      <div class="hero-stat-label">Precision</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- LEFT PANEL -->
+  <div class="panel-left">
+
+    <div>
+      <div class="section-head">
+        <div class="section-head-dot"></div>
+        <div>
+          <div class="section-title">Upload Vehicle Photo</div>
+          <div class="section-sub">Clear photos of the damaged area give the best results</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload zone -->
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this)" />
+      <div class="upload-icon">📷</div>
+      <div class="upload-text">Drop photo here or click to browse</div>
+      <div class="upload-hint">JPEG · PNG · WEBP · max 20MB</div>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview-wrap" id="previewWrap" style="display:none">
+      <img id="previewImg" src="" alt="Preview" />
+      <div class="preview-overlay">
+        <div class="scanner-line" id="scannerLine"></div>
+        <div class="scanner-grid" id="scannerGrid"></div>
+      </div>
+      <div class="preview-corner">
+        <span class="preview-corner-text">Evidence Photo</span>
+        <span class="preview-status-badge" id="previewStatusBadge">Ready</span>
+      </div>
+    </div>
+
+    <!-- Metadata -->
+    <div class="claim-meta" id="claimMeta" style="display:none">
+      <div class="meta-item">
+        <label>Filename</label>
+        <span id="metaFilename">—</span>
+      </div>
+      <div class="meta-item">
+        <label>File size</label>
+        <span id="metaSize">—</span>
+      </div>
+      <div class="meta-item">
+        <label>Submitted at</label>
+        <span id="metaTime">—</span>
+      </div>
+      <div class="meta-item">
+        <label>Status</label>
+        <span id="metaStatus" style="color:var(--green)">Pending</span>
+      </div>
+    </div>
+
+    <!-- Button -->
+    <button class="inspect-btn" id="inspectBtn" onclick="runInspection()" disabled>
+      <span id="btnIcon">🔍</span>
+      <span id="btnText">Select an image to begin</span>
+    </button>
+
+    <div class="reset-link" style="display:none" id="resetWrap">
+      <button onclick="resetForm()">Choose a different image</button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="panel-right" id="panelRight">
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-circle">🛡️</div>
+      <div class="empty-title">Awaiting submission</div>
+      <div class="empty-sub">Upload a vehicle photograph on the left to run AI damage analysis and fraud detection</div>
+    </div>
+
+    <!-- Results -->
+    <div id="resultsWrap" class="result-hidden">
+
+      <!-- Claim ID row -->
+      <div class="claim-id-row">
+        <div>
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);margin-bottom:2px;">Claim Reference</div>
+          <div class="claim-id-val" id="rClaimId">—</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);margin-bottom:2px;">Processed</div>
+          <div class="claim-id-time" id="rTimestamp">—</div>
+        </div>
+      </div>
+
+      <!-- Annotated image -->
+      <div class="annotated-wrap" id="annotatedWrap" style="display:none">
+        <div class="annotated-header">
+          <span class="annotated-title">AI Annotated Result</span>
+          <span style="font-size:11px;color:rgba(255,255,255,0.7);">Bounding boxes drawn by model</span>
+        </div>
+        <img id="annotatedImg" src="" alt="Annotated" />
+      </div>
+
+      <!-- Severity row -->
+      <div class="severity-row">
+        <div class="sev-card">
+          <div class="sev-card-top" id="sevTop"></div>
+          <div class="sev-card-body">
+            <div class="sev-label">Overall Severity</div>
+            <div class="sev-value" id="rSeverity">—</div>
+          </div>
+        </div>
+        <div class="sev-card">
+          <div class="sev-card-top green"></div>
+          <div class="sev-card-body">
+            <div class="sev-label">Detections</div>
+            <div class="sev-value count" id="rCount">—</div>
+          </div>
+        </div>
+        <div class="sev-card">
+          <div class="sev-card-top grey"></div>
+          <div class="sev-card-body">
+            <div class="sev-label">Inference Time</div>
+            <div class="sev-value speed" id="rSpeed">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detections -->
+      <div class="detections-card" id="detectionsCard">
+        <div class="detections-header">
+          <span class="detections-title">Damage Detected</span>
+          <span class="detections-count" id="detCount">0</span>
+        </div>
+        <div class="detection-list" id="detectionList"></div>
+      </div>
+
+      <!-- Fraud -->
+      <div class="fraud-card">
+        <div class="fraud-card-header" id="fraudHeader">
+          <span class="fraud-card-title">Fraud Analysis</span>
+          <span class="fraud-risk-pill" id="fraudRiskPill">—</span>
+        </div>
+        <div class="fraud-body" id="fraudBody"></div>
+      </div>
+
+      <!-- Recommendation -->
+      <div class="rec-card" id="recCard">
+        <div class="rec-icon-wrap" id="recIcon">—</div>
+        <div class="rec-text">
+          <strong id="recStrong">—</strong>
+          <span id="recSub">—</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer-bar">
+        <span>Hobbiton Investments · AI Inspection v1.0 · YOLOv8m · mAP@50: 0.626</span>
+        <strong id="footerSpeed">—ms</strong>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = "http://localhost:8000";
+  let selectedFile = null;
+
+  const CLASS_COLORS = {
+    "Broken part":  "#E74C3C",
+    "Missing part": "#C0392B",
+    "Cracked":      "#2980B9",
+    "Corrosion":    "#E67E22",
+    "Dent":         "#8E44AD",
+    "Flaking":      "#D4AC0D",
+    "Scratch":      "#198A37",
+    "Paint chip":   "#16A085",
+  };
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 5000);
+  }
+
+  function handleFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    selectedFile = file;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById("uploadZone").style.display   = "none";
+      document.getElementById("previewWrap").style.display  = "block";
+      document.getElementById("claimMeta").style.display    = "grid";
+      document.getElementById("resetWrap").style.display    = "block";
+      document.getElementById("previewImg").src = e.target.result;
+      document.getElementById("previewStatusBadge").textContent = "Ready";
+
+      const fname = file.name;
+      document.getElementById("metaFilename").textContent = fname.length > 18 ? fname.substring(0,16)+"…" : fname;
+      document.getElementById("metaSize").textContent     = (file.size / 1024).toFixed(1) + " KB";
+      document.getElementById("metaTime").textContent     = new Date().toLocaleTimeString();
+      document.getElementById("metaStatus").textContent   = "Ready";
+      document.getElementById("metaStatus").style.color   = "var(--green)";
+
+      const btn = document.getElementById("inspectBtn");
+      btn.disabled = false;
+      document.getElementById("btnIcon").textContent = "🔍";
+      document.getElementById("btnText").textContent = "Run AI Inspection";
+
+      document.getElementById("emptyState").style.display = "flex";
+      document.getElementById("resultsWrap").classList.add("result-hidden");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetForm() {
+    selectedFile = null;
+    document.getElementById("uploadZone").style.display   = "block";
+    document.getElementById("previewWrap").style.display  = "none";
+    document.getElementById("claimMeta").style.display    = "none";
+    document.getElementById("resetWrap").style.display    = "none";
+    document.getElementById("inspectBtn").disabled        = true;
+    document.getElementById("btnText").textContent        = "Select an image to begin";
+    document.getElementById("btnIcon").textContent        = "🔍";
+    document.getElementById("fileInput").value            = "";
+    document.getElementById("emptyState").style.display   = "flex";
+    document.getElementById("resultsWrap").classList.add("result-hidden");
+    stopScanner();
+  }
+
+  function startScanner() {
+    document.getElementById("scannerLine").classList.add("scanning");
+    document.getElementById("scannerGrid").classList.add("visible");
+    document.getElementById("previewStatusBadge").textContent = "Scanning…";
+    document.getElementById("previewStatusBadge").style.background = "rgba(25,138,55,0.4)";
+  }
+
+  function stopScanner() {
+    document.getElementById("scannerLine").classList.remove("scanning");
+    document.getElementById("scannerGrid").classList.remove("visible");
+    document.getElementById("previewStatusBadge").textContent = "Complete";
+    document.getElementById("previewStatusBadge").style.background = "rgba(255,255,255,0.2)";
+  }
+
+  async function runInspection() {
+    if (!selectedFile) return;
+
+    const btn = document.getElementById("inspectBtn");
+    btn.disabled = true;
+    document.getElementById("btnIcon").innerHTML = '<div class="spinner"></div>';
+    document.getElementById("btnText").textContent = "AI Inspecting…";
+    document.getElementById("metaStatus").textContent = "Processing";
+    document.getElementById("metaStatus").style.color = "var(--amber)";
+    startScanner();
+
+    document.getElementById("emptyState").style.display = "none";
+    document.getElementById("resultsWrap").classList.add("result-hidden");
+
+    try {
+      const form = new FormData();
+      form.append("file", selectedFile);
+
+      const res  = await fetch(`${API}/inspect/annotated`, { method: "POST", body: form });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      renderResults(data);
+
+    } catch (err) {
+      stopScanner();
+      showToast("⚠️ " + err.message + " — make sure the API is running on localhost:8000");
+      btn.disabled = false;
+      document.getElementById("btnIcon").textContent = "🔍";
+      document.getElementById("btnText").textContent = "Run AI Inspection";
+      document.getElementById("metaStatus").textContent = "Error";
+      document.getElementById("metaStatus").style.color = "var(--red)";
+      document.getElementById("emptyState").style.display = "flex";
+    }
+  }
+
+  function renderResults(data) {
+    stopScanner();
+    const dam   = data.damage_assessment;
+    const fraud = data.fraud_analysis;
+    const sev   = dam.overall_severity;
+
+    // Claim header
+    document.getElementById("rClaimId").textContent    = data.claim_id;
+    document.getElementById("rTimestamp").textContent  = new Date(data.timestamp).toLocaleString();
+
+    // Annotated image
+    if (data.annotated_image?.data) {
+      document.getElementById("annotatedImg").src      = `data:image/jpeg;base64,${data.annotated_image.data}`;
+      document.getElementById("annotatedWrap").style.display = "block";
+    }
+
+    // Severity
+    const sevEl  = document.getElementById("rSeverity");
+    const sevTop = document.getElementById("sevTop");
+    sevEl.textContent = sev;
+    sevEl.className   = "sev-value " + (sev === "Severe" ? "severe" : sev === "Moderate" ? "moderate" : sev === "Minor" ? "minor" : "none");
+    sevTop.className  = "sev-card-top " + (sev === "Severe" ? "red" : sev === "Moderate" ? "amber" : "green");
+
+    document.getElementById("rCount").textContent    = dam.total_detections;
+    document.getElementById("rSpeed").textContent    = dam.inference_time_ms + "ms";
+    document.getElementById("footerSpeed").textContent = dam.inference_time_ms + "ms";
+    document.getElementById("detCount").textContent  = dam.total_detections;
+
+    // Detection list
+    const list = document.getElementById("detectionList");
+    list.innerHTML = "";
+    if (dam.detections.length === 0) {
+      list.innerHTML = `<div style="padding:14px;color:var(--text-3);font-size:13px;text-align:center;">No damage detected — try uploading a clearer photo of the damaged area</div>`;
+    } else {
+      dam.detections.forEach(det => {
+        const color = CLASS_COLORS[det.class] || "#888";
+        const pct   = Math.round(det.confidence * 100);
+        list.innerHTML += `
+          <div class="detection-item">
+            <div class="det-left">
+              <div class="det-color-bar" style="background:${color}"></div>
+              <div>
+                <div class="det-name">${det.class}</div>
+                <div class="det-sev">${det.severity} damage</div>
+              </div>
+            </div>
+            <div class="det-right">
+              <div class="conf-bar-wrap">
+                <div class="conf-bar" style="width:${pct}%;background:${color}"></div>
+              </div>
+              <div class="conf-pct">${pct}%</div>
+            </div>
+          </div>`;
+      });
+    }
+
+    // Fraud
+    const risk      = fraud.fraud_risk.toLowerCase();
+    const hdr       = document.getElementById("fraudHeader");
+    const pill      = document.getElementById("fraudRiskPill");
+    const body      = document.getElementById("fraudBody");
+    hdr.className   = `fraud-card-header ${risk}`;
+    pill.textContent = { low: "LOW RISK", medium: "MEDIUM RISK", high: "HIGH RISK" }[risk] || risk.toUpperCase();
+
+    if (fraud.flags.length > 0) {
+      body.innerHTML = fraud.flags.map(f =>
+        `<div class="fraud-flag-item">⚠️ ${f}</div>`
+      ).join("");
+    } else {
+      body.innerHTML = `<div class="fraud-clean-item">✅ No fraud indicators detected on this submission</div>`;
+    }
+
+    // Recommendation
+    const isApprove = data.recommendation.startsWith("APPROVE");
+    document.getElementById("recCard").className      = `rec-card ${isApprove ? "approve" : "review"}`;
+    document.getElementById("recIcon").textContent    = isApprove ? "✅" : "⚠️";
+    document.getElementById("recStrong").textContent  = isApprove ? "Approved for Processing" : "Flagged for Manual Review";
+    document.getElementById("recSub").textContent     = data.recommendation;
+
+    // Meta update
+    document.getElementById("metaStatus").textContent = isApprove ? "Approved" : "Flagged";
+    document.getElementById("metaStatus").style.color = isApprove ? "var(--green)" : "var(--red)";
+
+    // Re-enable button
+    const btn = document.getElementById("inspectBtn");
+    btn.disabled = false;
+    document.getElementById("btnIcon").textContent = "🔄";
+    document.getElementById("btnText").textContent = "Re-run Inspection";
+
+    // Show results
+    document.getElementById("resultsWrap").classList.remove("result-hidden");
+  }
+</script>
+</body>
+</html>
