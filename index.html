@@ -382,8 +382,9 @@
           <span class="annotated-title" id="annotatedTitle">AI Annotated Result</span>
           <span style="font-size:11px;color:rgba(255,255,255,0.7);">Bounding boxes drawn by model</span>
         </div>
-        <img id="annotatedImg" src="" alt="Annotated" />
-      </div>
+          <img id="annotatedImg" src="" alt="Annotated" onclick="openLightbox()" />
+          <div class="expand-hint">🔍 Click image to expand full screen</div>
+        </div>
 
       <div class="severity-row">
         <div class="sev-card">
@@ -435,10 +436,37 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="Full size result" onclick="event.stopPropagation()" />
+  <span class="lightbox-hint">Press ESC or click outside to close</span>
+</div>
+
 <script>
   const API = "https://hobbiton-api-production-bd88.up.railway.app";
   let selectedFile = null;
-  let currentMode  = "photo"; // "photo" or "video"
+  let currentMode  = "photo";
+  let isRerun      = false;  // tracks whether this is a re-run
+
+  // ── Lightbox ──────────────────────────────────────────
+  function openLightbox() {
+    const src = document.getElementById("annotatedImg").src;
+    if (!src) return;
+    document.getElementById("lightboxImg").src = src;
+    document.getElementById("lightbox").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeLightbox() {
+    document.getElementById("lightbox").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  // Close lightbox with ESC key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeLightbox();
+  });
 
   const CLASS_COLORS = {
     "Broken part":  "#E74C3C",
@@ -541,6 +569,7 @@
     document.getElementById("emptyState").style.display   = "flex";
     document.getElementById("resultsWrap").classList.add("result-hidden");
     document.getElementById("videoProcBar").classList.remove("visible");
+    isRerun = false;  // new file = not a re-run
     stopScanner();
     const vid = document.getElementById("previewVid");
     vid.src = "";
@@ -584,7 +613,9 @@
     try {
       const form     = new FormData();
       form.append("file", selectedFile);
-      const endpoint = isVideo ? `${API}/inspect/video` : `${API}/inspect/annotated`;
+      const endpoint = isVideo
+            ? `${API}/inspect/video`
+            : `${API}/inspect/annotated${isRerun ? "?skip_fraud=true" : ""}`;
 
       const res = await fetch(endpoint, { method: "POST", body: form });
       if (!res.ok) {
@@ -721,6 +752,7 @@
     btn.disabled = false;
     document.getElementById("btnIcon").textContent = "🔄";
     document.getElementById("btnText").textContent = "Re-run Inspection";
+    isRerun = true;  // next click is a re-run — skip fraud
 
     document.getElementById("resultsWrap").classList.remove("result-hidden");
   }
