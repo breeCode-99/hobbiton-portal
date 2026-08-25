@@ -248,6 +248,31 @@
       padding: 6px;
       background: var(--bg);
     }
+    .report-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--white);
+      color: var(--text-1);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      border: 1.5px solid var(--border-dark);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .report-btn:hover {
+      background: var(--bg-subtle);
+      border-color: var(--text-2);
+    }
+    .report-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -430,6 +455,11 @@
         <strong id="footerSpeed">—ms</strong>
       </div>
 
+      <!-- Download Report Button -->
+      <button class="report-btn" id="reportBtn" onclick="downloadReport()">
+        📄 Download PDF Report
+      </button>
+
     </div>
   </div>
 </main>
@@ -573,6 +603,8 @@
     stopScanner();
     const vid = document.getElementById("previewVid");
     vid.src = "";
+    const reportBtn = document.getElementById("reportBtn");
+    if (reportBtn) reportBtn.style.display = "none";
   }
 
   function startScanner() {
@@ -755,6 +787,48 @@
     isRerun = true;  // next click is a re-run — skip fraud
 
     document.getElementById("resultsWrap").classList.remove("result-hidden");
+    // Show report button (hide for video — report only supports images)
+    const reportBtn = document.getElementById("reportBtn");
+    if (reportBtn) {
+      reportBtn.style.display = data._isVideo ? "none" : "flex";
+    }
+  }
+  async function downloadReport() {
+    if (!selectedFile || selectedFile.type.startsWith("video/")) return;
+
+    const btn = document.getElementById("reportBtn");
+    btn.disabled = true;
+    btn.textContent = "⏳ Generating report...";
+
+    try {
+      const form = new FormData();
+      form.append("file", selectedFile);
+
+      const res = await fetch(`${API}/inspect/report`, {
+        method: "POST",
+        body: form
+      });
+
+      if (!res.ok) throw new Error("Report generation failed");
+
+      // Get the PDF blob and trigger download
+      const blob     = await res.blob();
+      const url      = window.URL.createObjectURL(blob);
+      const a        = document.createElement("a");
+      const claimId  = document.getElementById("rClaimId").textContent || "report";
+      a.href         = url;
+      a.download     = `${claimId}_damage_report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+    } catch (err) {
+      showToast("⚠️ Could not generate report — " + err.message);
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = "📄 Download PDF Report";
   }
 </script>
 </body>
